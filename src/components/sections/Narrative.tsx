@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { PublicContent } from "@/lib/public-content";
 import { siteContent } from "@/data/site";
 import { BrandMark } from "@/components/ui/BrandMark";
+import { CheerBookReader } from "@/components/sections/CheerBookReader";
 
 export function Manifesto() {
   return <section className="manifesto" id="manifesto" aria-labelledby="manifesto-title">
@@ -19,7 +20,7 @@ export function People({ people }: { people: PublicContent["people"] }) {
     .filter((person): person is PublicContent["people"][number] => Boolean(person));
   return <section className="people" id="people" aria-labelledby="people-title">
     <div className="people__top editorial-label"><span>05 / MEET THE HOUSE</span><span>THE PEOPLE BEHIND THE BLUE</span></div>
-    <h2 id="people-title">THE<br /><em>HOUSE.</em></h2>
+    <h2 id="people-title">THE<br /><span>HOUSE.</span></h2>
     {leadership.length > 0 ? <div className="people__list">{leadership.map((person, index) => <figure key={person.id} className={`people__figure${person.slot === "president" ? " people__figure--feature" : ""}`}>
       <figcaption><span className="editorial-label">FIG. {String(index + 1).padStart(3, "0")} / {person.role}</span><strong>{person.name}</strong>{person.quote && <q>{person.quote}</q>}</figcaption>
       <div className="people__portrait"><Image src={person.portraitUrl} alt={`ภาพของ ${person.name}`} width={1200} height={1500} sizes="(max-width: 768px) 68vw, (max-width: 1400px) 40vw, 570px" /></div>
@@ -70,7 +71,7 @@ export function Moments({ moments }: { moments: PublicContent["moments"] }) {
 }
 
 export function CheerBook({ cheers }: { cheers: PublicContent["cheers"] }) {
-  return <section className="cheer-book" id="cheer-book" aria-labelledby="cheer-book-title"><div className="cheer-book__left"><p className="editorial-label">11 / BLUE STAND</p><h2 id="cheer-book-title">THE<br />CHEER<br /><em>BOOK.</em></h2></div><div className="cheer-book__right"><span className="editorial-label">SONGS / CHANTS / INSTRUCTIONS</span>{cheers.length > 0 ? <ol>{cheers.toSorted((a, b) => a.order - b.order).map((cheer) => <li key={cheer.id}><strong>{cheer.title}</strong><p>{cheer.lyrics}</p></li>)}</ol> : <p>เพลงเชียร์และคำแนะนำสำหรับสแตนด์สีฟ้าจะเผยแพร่เมื่อได้รับข้อมูลที่ยืนยันแล้ว</p>}<span className="cheer-book__rule" aria-hidden="true" /></div></section>;
+  return <section className="cheer-book" id="cheer-book" aria-labelledby="cheer-book-title"><div className="cheer-book__left"><p className="editorial-label">11 / BLUE STAND</p><h2 id="cheer-book-title">THE<br />CHEER<br /><span>BOOK.</span></h2></div><div className="cheer-book__right"><span className="editorial-label">SONGS / CHANTS / INSTRUCTIONS</span>{cheers.length > 0 ? <CheerBookReader cheers={cheers.toSorted((a, b) => a.order - b.order)} /> : <p>เพลงเชียร์และคำแนะนำสำหรับสแตนด์สีฟ้าจะเผยแพร่เมื่อได้รับข้อมูลที่ยืนยันแล้ว</p>}<span className="cheer-book__rule" aria-hidden="true" /></div></section>;
 }
 
 export function Announcements({ announcements }: { announcements: PublicContent["announcements"] }) {
@@ -79,7 +80,7 @@ export function Announcements({ announcements }: { announcements: PublicContent[
 }
 
 export function Venue() {
-  return <section className="venue" id="venue" aria-labelledby="venue-title"><p className="editorial-label">12 / THE VENUE</p><h2 id="venue-title">FIND<br />YOUR<br /><em>WAY.</em></h2><div className="venue__status"><span className="editorial-label">EVENT MAP / PENDING</span><p>ผังพื้นที่กิจกรรมจะปรากฏเมื่อได้รับแผนที่และจุดจัดงานที่ตรวจสอบแล้ว</p></div></section>;
+  return <section className="venue" id="venue" aria-labelledby="venue-title"><p className="editorial-label">12 / THE VENUE</p><h2 id="venue-title">FIND<br />YOUR<br /><span>WAY.</span></h2><div className="venue__status"><span className="editorial-label">EVENT MAP / PENDING</span><p>ผังพื้นที่กิจกรรมจะปรากฏเมื่อได้รับแผนที่และจุดจัดงานที่ตรวจสอบแล้ว</p></div></section>;
 }
 
 export function FinalScene() {

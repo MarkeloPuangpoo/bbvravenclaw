@@ -110,9 +110,9 @@ export function SiteHeader() {
         <span className="site-header__brand-rule" aria-hidden="true" />
         <span>26</span>
       </a>
-      <nav className="site-header__nav" aria-label="นำทางหลัก">
-        {navigation.map((item) => <a key={item.href} href={pathname === "/" ? item.href : `/${item.href}`} onClick={(event) => { event.preventDefault(); closeAndNavigate(item.href); }}>{item.label}</a>)}
-      </nav>
+      {pathname !== "/" && <nav className="site-header__nav" aria-label="นำทางหลัก">
+        {navigation.map((item) => <a key={item.href} href={`/${item.href}`} onClick={(event) => { event.preventDefault(); closeAndNavigate(item.href); }}>{item.label}</a>)}
+      </nav>}
       {pathname === "/" && <ConstellationNav variant="header" activeIndex={activeChapter} onNavigate={closeAndNavigate} isHomePage />}
       <button
         ref={menuButton}

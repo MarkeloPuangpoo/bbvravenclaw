@@ -28,6 +28,7 @@ export function ConstellationNav({ activeIndex, variant, onNavigate, isHomePage,
   const route = `M ${points.map(({ x, y }) => `${x} ${y}`).join(" L ")}`;
   return (
     <nav className={`constellation-nav constellation-nav--${variant}`} aria-label="แผนที่ดาวนำทางบท">
+      {variant === "header" && <span className="constellation-nav__caption" aria-hidden="true">CHAPTER MAP<br />SELECT A STAR</span>}
       <svg className="constellation-nav__chart" viewBox={variant === "header" ? "0 0 200 40" : "0 0 60 408"} fill="none" aria-hidden="true" focusable="false">
         <path className="constellation-nav__guide" d={route} />
         <path className="constellation-nav__trace" d={route} pathLength="100" />

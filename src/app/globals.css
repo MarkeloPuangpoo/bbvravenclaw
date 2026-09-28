@@ -1,3 +1,6 @@
+/* Hallmark · genre: editorial · macrostructure: cinematic chapter sequence · design-system: design.md · designed-as-app
+ * pre-emit critique: P5 H4 E4 S5 R4 V4
+ */
 @import "tailwindcss";
 
 :root {
@@ -49,9 +52,10 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-padding-top: 76px; }
+html { scroll-padding-top: 76px; overflow-x: clip; }
 body {
   margin: 0;
+  overflow-x: clip;
   background: var(--color-midnight);
   color: var(--color-moonlight);
   font-family: var(--font-body);
@@ -142,6 +146,7 @@ a { color: inherit; }
 
 .constellation-nav { --star-dash: 0; position: relative; flex: none; color: var(--color-bronze-light); }
 .constellation-nav--header { width: 200px; height: 40px; }
+.constellation-nav__caption { position: absolute; right: calc(100% + 18px); top: 50%; transform: translateY(-50%); color: var(--color-ink-inverse-soft); font-size: .52rem; font-weight: 600; letter-spacing: .12em; line-height: 1.55; white-space: nowrap; }
 .constellation-nav__chart, .constellation-nav__links { position: absolute; inset: 0; width: 100%; height: 100%; }
 .constellation-nav__chart { overflow: visible; pointer-events: none; }
 .constellation-nav__guide { stroke: currentColor; stroke-width: .6; opacity: .4; }
@@ -345,7 +350,7 @@ a { color: inherit; }
 .people__top { position: relative; z-index: 1; }
 .people__top, .athletes__top { display: flex; justify-content: space-between; gap: 20px; }
 .people h2 { position: relative; z-index: 2; margin: 12vh 0 0; font-family: var(--font-display); font-size: clamp(8rem, 20vw, 23rem); font-weight: 400; letter-spacing: -.075em; line-height: .6; }
-.people h2 em { margin-left: 11vw; font-weight: 400; }
+.people h2 span { display: inline-block; margin-left: 11vw; font-weight: 400; font-style: normal; }
 .people__pending { position: relative; z-index: 3; display: flex; flex-direction: column; align-items: flex-end; max-width: 55%; margin: 10vh 2vw 0 auto; }
 .people__pending p { align-self: flex-start; margin: -5vh 0 20px; font-size: clamp(1.15rem, 1.7vw, 1.8rem); line-height: 1.65; }
 .people__empty-frame { width: min(28vw, 360px); height: min(40vw, 480px); border: 1px solid var(--color-rule-light); transform: rotate(7deg); }
@@ -396,7 +401,7 @@ a { color: inherit; }
 .athletes__people figcaption strong { font-size: clamp(1.7rem, 2.2vw, 2.75rem); overflow-wrap: anywhere; }
 
 .standing { padding: 100px var(--gutter); background: var(--color-raven-deep); }
-.standing h2 { margin: 50px 0 70px; font-family: var(--font-display); font-size: clamp(6rem, 13vw, 14rem); font-weight: 400; line-height: .7; }
+.standing h2 { max-width: 100%; margin: 50px 0 70px; font-family: var(--font-display); font-size: clamp(3.4rem, 13vw, 14rem); font-weight: 400; line-height: .78; overflow-wrap: anywhere; }
 .standing ol { padding: 0; list-style: none; }
 .standing li { display: grid; grid-template-columns: 8vw 1fr auto; gap: 20px; align-items: baseline; padding: 20px 0; border-top: 1px solid var(--color-rule-dark); font-size: clamp(1.5rem, 4vw, 4rem); }
 .standing li strong { font-weight: 500; }
@@ -431,19 +436,43 @@ a { color: inherit; }
 .cheer-book__left, .cheer-book__right { position: relative; z-index: 1; }
 .cheer-book__left > p { margin: 0; color: var(--color-bronze-ink); }
 .cheer-book h2 { margin: 12vh 0 0; font-family: var(--font-display); font-size: clamp(6rem, 11vw, 12rem); font-weight: 400; letter-spacing: -.07em; line-height: .68; }
-.cheer-book h2 em { margin-left: 8vw; font-weight: 400; }
+.cheer-book h2 span { display: inline-block; margin-left: 8vw; color: var(--color-raven); font-weight: 400; font-style: normal; }
 .cheer-book__right { align-self: end; padding-top: 20px; border-top: 1px solid var(--color-rule-light); }
 .cheer-book__right > p { max-width: 33ch; margin: 28px 0 18vh; font-size: clamp(1.25rem, 1.8vw, 1.9rem); line-height: 1.65; }
-.cheer-book__right ol { padding-left: 20px; }
-.cheer-book__right li { padding: 15px 0; border-bottom: 1px solid var(--color-rule-light); }
-.cheer-book__right li strong { font-size: 1.4rem; }
-.cheer-book__right li p { white-space: pre-line; }
+.cheer-book__right > .cheer-book__intro { margin: 28px 0; font-size: clamp(1.15rem, 1.8vw, 1.8rem); line-height: 1.6; }
+.cheer-book__contents { margin: 0 0 36px; padding: 0; list-style: none; }
+.cheer-book__contents li { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 16px; padding: 15px 0; border-top: 1px solid var(--color-rule-light); }
+.cheer-book__contents li span { color: var(--color-bronze-ink); font-size: .75rem; }
+.cheer-book__contents li strong { font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 500; overflow-wrap: anywhere; }
+.cheer-book__open { display: flex; align-items: center; justify-content: space-between; gap: 32px; width: min(100%, 390px); min-height: 58px; padding: 14px 18px; border: 1px solid var(--color-midnight); border-radius: 0; background: transparent; color: var(--color-midnight); font-size: .75rem; font-weight: 700; letter-spacing: .13em; cursor: pointer; transition: background var(--dur-ui), color var(--dur-ui); }
+.cheer-book__open:hover, .cheer-book__open:focus-visible { background: var(--color-midnight); color: var(--color-parchment); }
+.cheer-book__open:active { transform: translateY(1px); }
+.cheer-book__open:focus-visible { outline-color: var(--color-focus-light); }
 .cheer-book__rule { display: block; width: 100%; border-top: 1px solid var(--color-rule-light); }
+
+.cheer-reader { position: fixed; z-index: 100; inset: 0; background: var(--color-midnight); color: var(--color-moonlight); }
+.cheer-reader__panel { display: flex; flex-direction: column; height: 100svh; padding: max(20px, env(safe-area-inset-top)) max(var(--gutter), env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(var(--gutter), env(safe-area-inset-left)); }
+.cheer-reader__top { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex: none; border-bottom: 1px solid var(--color-rule-dark); padding-bottom: 18px; }
+.cheer-reader__top button { min-width: 90px; min-height: 44px; border: 0; background: transparent; color: inherit; font-size: .72rem; font-weight: 700; letter-spacing: .15em; cursor: pointer; }
+.cheer-reader__top button span { margin-left: 12px; font-size: 1.4rem; vertical-align: middle; }
+.cheer-reader__top button:hover, .cheer-reader__top button:focus-visible { color: var(--color-bronze-light); }
+.cheer-reader__body { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(24px, 5vw, 100px); flex: 1; min-height: 0; }
+.cheer-reader__index, .cheer-reader__page { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding-block: clamp(22px, 4vh, 50px); }
+.cheer-reader__index h2 { margin: 30px 0 50px; font-family: var(--font-display); font-size: clamp(4rem, 8vw, 9rem); font-weight: 400; letter-spacing: -.06em; line-height: .72; }
+.cheer-reader__index ol { margin: 0; padding: 0; list-style: none; }
+.cheer-reader__index li { border-top: 1px solid var(--color-rule-dark); }
+.cheer-reader__index li:last-child { border-bottom: 1px solid var(--color-rule-dark); }
+.cheer-reader__index li button { display: flex; align-items: baseline; gap: 18px; width: 100%; min-height: 54px; padding: 13px 2px; border: 0; background: transparent; color: var(--color-moonlight); text-align: left; font-size: clamp(1rem, 1.5vw, 1.3rem); cursor: pointer; }
+.cheer-reader__index li button span { color: var(--color-bronze-light); font-size: .7rem; }
+.cheer-reader__index li button:hover, .cheer-reader__index li button:focus-visible, .cheer-reader__index li button.cheer-reader__song--active { color: var(--color-bronze-light); }
+.cheer-reader__page { border-left: 1px solid var(--color-rule-dark); padding-inline: clamp(20px, 5vw, 80px); }
+.cheer-reader__page h3 { margin: 25px 0 38px; font-family: var(--font-display); font-size: clamp(2.6rem, 5vw, 6rem); font-weight: 400; line-height: 1.1; overflow-wrap: anywhere; }
+.cheer-reader__page p { max-width: 36ch; margin: 0 0 14vh; white-space: pre-line; font-size: clamp(1.2rem, 2vw, 1.8rem); line-height: 1.75; overflow-wrap: anywhere; }
 
 .venue { position: relative; min-height: 85svh; overflow: clip; padding: 100px var(--gutter); background: var(--color-parchment-deep); color: var(--color-midnight); }
 .venue > p:first-child { margin: 0; color: var(--color-raven); }
 .venue h2 { margin: 13vh 0 0; font-family: var(--font-display); font-size: clamp(7rem, 16vw, 17rem); font-weight: 400; letter-spacing: -.07em; line-height: .62; }
-.venue h2 em { margin-left: 14vw; font-weight: 400; }
+.venue h2 span { display: inline-block; margin-left: 14vw; color: var(--color-raven); font-weight: 400; font-style: normal; }
 .venue__status { position: absolute; right: var(--gutter); bottom: 12%; max-width: 27ch; border-top: 1px solid var(--color-rule-light); padding-top: 16px; }
 .venue__status p { font-size: clamp(1.1rem, 1.6vw, 1.6rem); line-height: 1.65; }
 
@@ -612,6 +641,7 @@ a { color: inherit; }
   .athletes__people { order: 2; align-self: flex-start; }
   .athletes__people figure { width: min(48vw, 190px); }
   .standing { padding-block: 90px; }
+  .standing h2 { font-size: clamp(3.1rem, 12vw, 7rem); line-height: .85; }
   .standing li { grid-template-columns: 35px 1fr auto; }
   .moments { min-height: 90svh; padding-top: 90px; }
   .moments h2 { margin-top: 16vh; font-size: 23vw; }
@@ -627,6 +657,16 @@ a { color: inherit; }
   .cheer-book { grid-template-columns: 1fr; gap: 12vh; padding-block: 90px; }
   .cheer-book h2 { margin-top: 12vh; font-size: 21vw; }
   .cheer-book__right > p { margin-bottom: 12vh; font-size: 1.1rem; }
+  .cheer-reader__body { display: flex; flex-direction: column; overflow-y: auto; gap: 0; }
+  .cheer-reader__index, .cheer-reader__page { overflow: visible; min-height: auto; }
+  .cheer-reader__index { padding-bottom: 22px; }
+  .cheer-reader__index h2 { margin: 20px 0 30px; font-size: clamp(3.7rem, 13vw, 6rem); }
+  .cheer-reader__index ol { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; }
+  .cheer-reader__index li, .cheer-reader__index li:last-child { flex: none; max-width: min(72vw, 260px); border: 1px solid var(--color-rule-dark); }
+  .cheer-reader__index li button { min-height: 48px; padding-inline: 12px; white-space: nowrap; }
+  .cheer-reader__page { border-top: 1px solid var(--color-rule-dark); border-left: 0; padding: 24px 0 60px; }
+  .cheer-reader__page h3 { margin-block: 18px 28px; }
+  .cheer-reader__page p { font-size: 1.2rem; }
   .venue { min-height: 85svh; padding-top: 90px; }
   .venue h2 { margin-top: 15vh; font-size: 23vw; }
   .venue__status { position: relative; right: auto; bottom: auto; margin: 12vh 0 0 auto; font-size: 1rem; }
