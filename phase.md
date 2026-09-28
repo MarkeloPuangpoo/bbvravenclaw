@@ -2,6 +2,8 @@
 
 เอกสารนี้ใช้ติดตามงานจากแนวทางใน [AGENTS.md](./AGENTS.md) และ [design.md](./design.md) โดย `AGENTS.md` เป็นหลักเมื่อข้อกำหนดขัดกัน ส่วน `design.md` กำหนดรายละเอียดการออกแบบและ motion
 
+แผนลูกเล่นชุดถัดไป (แผนที่ดาวนำทางบท → People wipe → Cheer Book เต็มจอ) และ checklist ตรวจรับอยู่ใน [interaction-plan.md](./interaction-plan.md)
+
 ## วิธีใช้
 
 - `[ ]` ยังไม่เสร็จ, `[x]` เสร็จและตรวจแล้ว
