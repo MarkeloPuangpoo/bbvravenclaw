@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" fill="none">
+  <g stroke="#A97942">
+    <circle cx="500" cy="500" r="420" stroke-width="1.5" opacity=".78"/>
+    <circle cx="500" cy="500" r="398" opacity=".6"/>
+    <circle cx="500" cy="500" r="332" opacity=".48"/>
+    <circle cx="500" cy="500" r="220" opacity=".35"/>
+    <circle cx="500" cy="500" r="73" opacity=".5"/>
+    <path d="M500 50v900M50 500h900M182 182l636 636M818 182L182 818" opacity=".24"/>
+    <path d="M122 314h756M122 686h756M314 122v756M686 122v756" stroke-dasharray="3 10" opacity=".32"/>
+    <path d="M86 500h-28m856 0h28M500 86V58m0 856v28M209 209l-20-20m602 602 20 20M791 209l20-20M209 791l-20 20" stroke-width="2"/>
+    <path d="M113 345l-26-10m800 330 26 10M335 87l10 26m330 800-10-26M665 87l-10 26M345 887l-10 26M887 335l-26 10M113 655l-26 10" opacity=".7"/>
+    <path d="M181 500c82-129 192-189 319-182 133 7 241 72 319 182-73 126-187 189-319 182-133-7-238-67-319-182Z" stroke-width="1.5"/>
+    <path d="M282 256c126 71 240 170 345 297 45 54 77 106 96 156M271 699c44-119 127-236 250-351 77-71 149-115 215-135" stroke-dasharray="5 12" opacity=".78"/>
+    <path d="M500 424v152M424 500h152M467 467l66 66m0-66-66 66" opacity=".7"/>
+  </g>
+  <g fill="#A97942"><circle cx="500" cy="318" r="5"/><circle cx="627" cy="553" r="4"/><circle cx="271" cy="699" r="4"/><circle cx="736" cy="213" r="3"/><circle cx="500" cy="500" r="5"/></g>
+  <g stroke="#A97942" opacity=".75"><path d="M78 78h72M78 78v72M922 78h-72m72 0v72M78 922h72m-72 0v-72m844 72h-72m72 0v-72"/></g>
+</svg>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" fill="none">
+  <g stroke="#DDE9FF" stroke-width="1">
+    <circle cx="500" cy="500" r="388" opacity=".38"/>
+    <circle cx="500" cy="500" r="308" opacity=".22"/>
+    <circle cx="500" cy="500" r="196" opacity=".16"/>
+    <circle cx="500" cy="500" r="34" opacity=".36"/>
+    <path d="M500 64v872M64 500h872" opacity=".17"/>
+    <path d="M146 146l708 708M854 146L146 854" opacity=".09"/>
+    <path d="M500 112v-42m0 818v42M112 500H70m818 0h42" opacity=".65"/>
+    <path d="M306 164l13 31m362 610 13 31M164 306l31 13m610 362 31 13M694 164l-13 31M319 805l-13 31M836 306l-31 13M195 681l-31 13" opacity=".28"/>
+    <path d="M196 333c158-147 440-167 621 13M175 656c166 180 467 215 655-6" stroke-dasharray="2 11" opacity=".38"/>
+    <path d="M174 512c112-30 210-86 304-166 80 98 137 137 323 155M174 512c123 69 215 121 332 143 88-43 181-93 295-154M478 346l28 309M326 425l-41-109M650 407l70-117M506 655l-79 93M506 655l98 87" stroke-width="1.6" opacity=".72"/>
+    <path d="M478 346c41-22 86-28 130-18M326 425c-36 2-72-6-108-23M650 407c51-7 98-2 142 16M506 655c-49 19-91 47-127 83M506 655c58 16 107 46 148 83" stroke-dasharray="3 8" opacity=".52"/>
+    <path d="M478 330v-22m-16 38h-22M650 391v-22m16 38h22M506 639v-20m-16 36h-20" opacity=".45"/>
+  </g>
+  <g fill="#DDE9FF">
+    <circle cx="174" cy="512" r="3"/><circle cx="326" cy="425" r="4"/><circle cx="478" cy="346" r="5"/>
+    <circle cx="650" cy="407" r="4"/><circle cx="801" cy="501" r="3"/><circle cx="506" cy="655" r="5"/>
+    <circle cx="285" cy="316" r="2"/><circle cx="720" cy="290" r="2"/><circle cx="427" cy="748" r="2"/><circle cx="604" cy="742" r="2"/>
+    <circle cx="255" cy="253" r="1.5" opacity=".55"/><circle cx="747" cy="233" r="1.5" opacity=".55"/>
+    <circle cx="805" cy="669" r="1.5" opacity=".55"/><circle cx="243" cy="719" r="1.5" opacity=".55"/>
+  </g>
+  <g stroke="#A97942" stroke-width="1.4">
+    <circle cx="478" cy="346" r="11"/><circle cx="506" cy="655" r="12"/><path d="M478 326v-13m0 66v-13m-31-20h-13m88 0h-13M506 631v-13m0 74v-13m-37-24h-13m100 0h-13"/>
+    <path d="M794 150h70v70M136 780v70h70" opacity=".7"/>
+  </g>
+</svg>
