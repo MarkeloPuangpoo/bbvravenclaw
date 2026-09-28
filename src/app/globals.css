@@ -586,12 +586,12 @@ a { color: inherit; }
   .hero__title { z-index: 3; font-size: clamp(5.2rem, 20vw, 10rem); letter-spacing: -0.08em; line-height: 0.71; justify-content: center; }
   .hero__title span:last-child { margin-top: 1.2em; }
   .hero__artifact { width: min(83vw, 500px); margin-top: -3vh; }
-  .hero__star-chart { width: min(96vw, 560px); opacity: .17; }
+  .hero__star-chart { left: 50%; width: min(82vw, 560px); opacity: .17; }
   .hero__values { right: var(--gutter); bottom: 11%; max-width: 42%; text-align: right; }
   .hero__scroll { bottom: 25px; }
   .hero__year { bottom: 20px; }
   .sorting { min-height: 95svh; padding-top: 92px; }
-  .sorting__crest { top: 8%; right: -6%; width: 57vw; opacity: .35; }
+  .sorting__crest { top: 8%; right: 0; width: min(57vw, 230px); opacity: .35; }
   .sorting__instrument { left: -34vw; bottom: -20vw; width: 110vw; opacity: .16; }
   .sorting__copy { padding: 9vh 0; }
   .sorting__first { font-size: clamp(3.8rem, 11vw, 6.5rem); }
@@ -692,6 +692,12 @@ a { color: inherit; }
   .people-preview__word { top: 34%; font-size: 29vw; }
   .people-preview__cutout { right: -48vw; width: 190vw; }
   .people-preview__scene--leadership .people-preview__text h2 { font-size: 24vw; }
+}
+
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 768px) {
+    html, body { overflow-x: hidden; }
+  }
 }
 
 @media (max-width: 420px) {
