@@ -32,6 +32,7 @@ export function SceneMotion() {
       const sorting = document.querySelector<HTMLElement>(".sorting");
       const values = document.querySelector<HTMLElement>(".values");
       if (!hero || !sorting || !values) return;
+      sorting.classList.add("sorting--overlap");
 
       const heroTimeline = gsap.timeline({
         scrollTrigger: { trigger: hero, start: "top top", end: "+=100%", pin: true, scrub: 0.7, anticipatePin: 1 },
@@ -55,18 +56,22 @@ export function SceneMotion() {
       const states = gsap.utils.toArray<HTMLElement>(".values__state");
       if (states.length !== 4) return;
       values.classList.add("values--motion");
-      gsap.set(states.slice(1), { autoAlpha: 0 });
+      gsap.set(states.slice(1), { opacity: 0 });
       const valuesTimeline = gsap.timeline({
         scrollTrigger: { trigger: values, start: "top top", end: "+=240%", pin: true, scrub: 0.6, anticipatePin: 1 },
+        onUpdate: () => {
+          const light = Number(gsap.getProperty(tints[0], "opacity")) > 0.5 && Number(gsap.getProperty(tints[1], "opacity")) < 0.5;
+          values.dataset.tone = light ? "light" : "dark";
+        },
       });
-      const colors = ["#eee9dc", "#102a6b", "#050a18"];
+      const tints = [".values__tint--parchment", ".values__tint--raven", ".values__tint--midnight"];
       for (let index = 1; index < states.length; index++) {
         const position = index - 1;
         valuesTimeline
-          .to(states[index - 1], { autoAlpha: 0, yPercent: -12, duration: 0.3 }, position)
-          .to(values, { backgroundColor: colors[index - 1], duration: 0.5 }, position)
-          .fromTo(states[index], { autoAlpha: 0, yPercent: 12 }, { autoAlpha: 1, yPercent: 0, duration: 0.4 }, position + 0.25)
-          .to(".values__art", { xPercent: index === 1 ? 28 : index === 2 ? -20 : 0, scale: index === 2 ? 1.16 : 1, rotation: index === 3 ? 10 : index * 3, duration: 0.8 }, position);
+          .to(states[index - 1], { opacity: 0, yPercent: -12, duration: 0.3 }, position)
+          .to(tints[index - 1], { opacity: 1, duration: 0.5 }, position)
+          .fromTo(states[index], { opacity: 0, yPercent: 12 }, { opacity: 1, yPercent: 0, duration: 0.4 }, position + 0.25)
+          .to(".values__art", { xPercent: index === 1 ? -92 : index === 2 ? -20 : 0, scale: index === 1 ? 0.9 : index === 2 ? 1.16 : 1, rotation: index === 3 ? 10 : index * 3, duration: 0.8 }, position);
       }
       valuesTimeline.to({}, { duration: 0.5 });
 
@@ -84,8 +89,10 @@ export function SceneMotion() {
       });
 
       return () => {
+        sorting.classList.remove("sorting--overlap");
+        delete values.dataset.tone;
         values.classList.remove("values--motion");
-        gsap.set(states, { clearProps: "all" });
+        gsap.set([...states, ...tints], { clearProps: "all" });
         gsap.set([hero, values, ".hero__title span", ".hero__artifact", ".hero__school", ".hero__index", ".hero__values", ".hero__scroll", ".values__art", ".sorting__first", ".sorting h2"], { clearProps: "all" });
         gsap.set([".manifesto__outline", ".cheerleaders__rule", ".final-scene h2 span", ".final-scene h2 strong"], { clearProps: "all" });
       };

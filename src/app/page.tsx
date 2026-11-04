@@ -6,6 +6,7 @@ import { SceneMotion } from "@/components/motion/SceneMotion";
 import { Invitation } from "@/components/motion/Invitation";
 import { Announcements, Athletes, CheerBook, Cheerleaders, FinalScene, Manifesto, Moments, People, Schedule, Standing, Venue } from "@/components/sections/Narrative";
 import { BrandMark } from "@/components/ui/BrandMark";
+import { HouseDiadem } from "@/components/three/HouseDiadem";
 import { getPublicContent } from "@/lib/public-content";
 
 export default async function Home() {
@@ -55,6 +56,7 @@ export default async function Home() {
         <div className="sorting__crest" aria-hidden="true"><Image src="/assets/brand/ravenclaw-mark-primarycrest-rmbg.png?v=transparent" width={6250} height={6250} alt="" sizes="(max-width: 768px) 54vw, 26vw" loading="lazy" /></div>
         <div className="sorting__copy">
           <p className="sorting__first">NOT EVERYONE<br />BELONGS HERE.</p>
+          <HouseDiadem className="sorting__diadem" />
           <h2 id="sorting-title"><span>YOU DO.</span><strong>RAVENCLAW</strong></h2>
         </div>
         <div className="sorting__metadata editorial-label">
@@ -65,6 +67,9 @@ export default async function Home() {
       <Manifesto />
 
       <section className="values" id="values" aria-labelledby="values-title">
+        <span className="values__tint values__tint--parchment" aria-hidden="true" />
+        <span className="values__tint values__tint--raven" aria-hidden="true" />
+        <span className="values__tint values__tint--midnight" aria-hidden="true" />
         <span className="values__diagram" aria-hidden="true" />
         <div className="values__top editorial-label"><span>04 / THE EAGLE</span><span>THE HOUSE OF MINDS</span></div>
         <h2 id="values-title" className="sr-only">หลักของบ้านสีฟ้า</h2>

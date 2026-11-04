@@ -1,19 +1,40 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/supabase/admin";
+import { AdminFrame } from "@/components/admin/AdminFrame";
+import { ConfirmDelete } from "@/components/admin/ConfirmDelete";
+import { RecordForm } from "@/components/admin/RecordForm";
+import { formatMeta, formatUpdated, signImages, toBangkokInput } from "@/lib/admin/content";
 import { isSectionKey, sections, type Field } from "@/lib/admin/sections";
 import { deleteRecord, saveRecord } from "../actions";
 
-function FieldInput({ field, value, sports, previewUrl }: { field: Field; value: unknown; sports: { id: string; name: string }[]; previewUrl?: string }) {
-  const text = value == null ? "" : String(value);
-  if (field.name === "sport_id") return <label>{field.label}<select name="sport_id" defaultValue={text}><option value="">ไม่ระบุ</option>{sports.map((sport) => <option key={sport.id} value={sport.id}>{sport.name}</option>)}</select></label>;
-  if (field.kind === "checkbox") return <div><label className="admin-check"><input name={field.name} type="checkbox" defaultChecked={value === true} />{field.label}</label>{field.name === "is_demo" && <small>ติ๊กไว้สำหรับข้อมูลทดลองเท่านั้น หากจะเผยแพร่ ให้ใช้ชื่อและภาพจริง แล้วเอาติ๊กนี้ออก</small>}</div>;
-  if (field.kind === "image") return <label>{field.label}{previewUrl && <Image className="admin-image-preview" src={previewUrl} alt={`ภาพปัจจุบัน: ${field.label}`} width={480} height={320} sizes="(max-width: 768px) 100vw, 480px" unoptimized />}{text && !previewUrl && <small>ไม่สามารถโหลดภาพปัจจุบันได้</small>}<input type="file" name={field.name} accept="image/jpeg,image/png,image/webp,image/avif" /><small>{text ? "เลือกไฟล์ใหม่เพื่อแทนภาพปัจจุบัน" : "JPG, PNG, WebP หรือ AVIF ไม่เกิน 12 MB"}</small></label>;
-  if (field.kind === "select") return <label>{field.label}<select name={field.name} defaultValue={text || (field.allowEmpty ? "" : field.options?.[0])}>{field.allowEmpty && <option value="">ไม่แสดงบนหน้าเว็บ</option>}{field.options?.map((option) => <option value={option} key={option}>{field.optionLabels?.[option] ?? option}</option>)}</select></label>;
-  if (field.kind === "textarea") return <label>{field.label}<textarea name={field.name} defaultValue={text} maxLength={field.max} rows={field.name === "lyrics" ? 8 : 3} /></label>;
-  const display = field.kind === "datetime" && text ? new Date(new Date(text).getTime() + 7 * 60 * 60 * 1000).toISOString().slice(0, 16) : text;
-  return <label>{field.label}<input name={field.name} type={field.kind === "datetime" ? "datetime-local" : field.kind ?? "text"} defaultValue={display} maxLength={field.max} min={field.kind === "number" ? 0 : undefined} step={field.kind === "number" ? 1 : undefined} /></label>;
+type Row = Record<string, unknown> & { id: string; status: string };
+type Filter = "all" | "published" | "draft";
+
+const slotGroup: Record<string, string> = {
+  president: "leadership",
+  vice_president_1: "leadership",
+  vice_president_2: "leadership",
+  stand_head: "cheerleader",
+  sports_head: "athlete",
+};
+
+export async function generateMetadata({ params }: PageProps<"/admin/[section]">) {
+  const { section } = await params;
+  return { title: isSectionKey(section) ? sections[section].label : "จัดการเนื้อหา" };
+}
+
+function toValues(fields: readonly Field[], record: Row | null, prefill: Record<string, string>) {
+  const values: Record<string, string | boolean> = {};
+  for (const field of fields) {
+    const raw = record?.[field.name];
+    if (field.kind === "checkbox") values[field.name] = raw === true;
+    else if (field.kind === "datetime") values[field.name] = toBangkokInput(raw);
+    else if (field.kind === "time") values[field.name] = typeof raw === "string" ? raw.slice(0, 5) : "";
+    else values[field.name] = raw == null ? (prefill[field.name] ?? "") : String(raw);
+  }
+  return values;
 }
 
 export default async function AdminSection({ params, searchParams }: PageProps<"/admin/[section]">) {
@@ -21,47 +42,179 @@ export default async function AdminSection({ params, searchParams }: PageProps<"
   if (!isSectionKey(section)) notFound();
   const supabase = await requireAdmin();
   const config = sections[section];
-  const homepageSlotField = (config.fields as readonly Field[]).find((field) => field.name === "homepage_slot");
-  const { data, error } = await supabase.from(config.table).select("*").order("created_at", { ascending: false });
-  const imageFields = (config.fields as readonly Field[]).filter((field) => field.kind === "image");
-  const imagePaths = [...new Set((data ?? []).flatMap((record) => imageFields.map((field) => record[field.name]).filter((path): path is string => typeof path === "string" && path.length > 0)))];
-  const signedImages = new Map<string, string>();
-  await Promise.all(imagePaths.map(async (path) => {
-    const { data: signed } = await supabase.storage.from("event-media").createSignedUrl(path, 60 * 15);
-    if (signed?.signedUrl) signedImages.set(path, signed.signedUrl);
-  }));
-  const { data: sportRows } = section === "people" || section === "schedule" ? await supabase.from("sports").select("id,name").order("name") : { data: [] };
-  const sports = sportRows ?? [];
+  const fields = config.fields as readonly Field[];
   const query = await searchParams;
-  const message = query.saved ? "บันทึกแล้ว" : query.deleted ? "ลบแล้ว" : typeof query.error === "string" ? query.error : null;
-  return <main className="admin-shell" id="main-content">
-    <p className="editorial-label"><Link href="/admin">← CONTROL ROOM</Link> / {config.label}</p>
-    <h1>{config.label}</h1>
-    {section === "people" && <p className="admin-publish-guide">เลือกตำแหน่งที่แสดงบนหน้าเว็บ: PEOPLE มีประธานและรองประธาน 2 คน, BLUE STAND มีหัวหน้าสแตนด์ 1 คน, THE FIELD มีหัวหน้ากีฬา 1 คน รายการที่ไม่เลือกตำแหน่งจะอยู่ใน admin เท่านั้น แม้เลือกสถานะเผยแพร่ หน้า <Link href="/preview/people">ภาพสาธิต</Link> ไม่ดึงข้อมูลจาก admin</p>}
-    {message && <p role="status" className="admin-alert">{message}</p>}
-    {error && <p role="alert" className="admin-alert">อ่านข้อมูลไม่สำเร็จ: {error.message}</p>}
-    <details className="admin-editor" open={!data?.length}><summary>เพิ่มรายการใหม่</summary>
-      <form action={saveRecord}>
-        <input type="hidden" name="section" value={section} />
-        <div className="admin-fields">{config.fields.map((field) => <FieldInput key={field.name} field={field} value={null} sports={sports} />)}</div>
-        {section !== "standings" && <label>ลำดับ<input type="number" name="sort_order" defaultValue={0} /></label>}
-        <label>สถานะ<select name="status" defaultValue="draft"><option value="draft">ฉบับร่าง</option><option value="published">เผยแพร่</option></select></label>
-        <button type="submit">บันทึกรายการ</button>
-      </form>
-    </details>
-    <div className="admin-records">
-      {(data ?? []).map((record) => <details className="admin-editor" key={record.id}>
-        <summary><span>{String(record.name ?? record.title ?? record.house ?? record.caption ?? record.event_date ?? record.id)}</span><small>{record.status}{record.is_demo ? " · DEMO" : ""}{record.homepage_slot ? ` · ${homepageSlotField?.optionLabels?.[record.homepage_slot] ?? record.homepage_slot}` : ""}</small></summary>
-        <form action={saveRecord}>
-          <input type="hidden" name="section" value={section} /><input type="hidden" name="id" value={record.id} />
-          <div className="admin-fields">{config.fields.map((field) => <FieldInput key={field.name} field={field} value={record[field.name]} sports={sports} previewUrl={typeof record[field.name] === "string" ? signedImages.get(record[field.name]) : undefined} />)}</div>
-          {section !== "standings" && <label>ลำดับ<input type="number" name="sort_order" defaultValue={record.sort_order ?? 0} /></label>}
-          <label>สถานะ<select name="status" defaultValue={record.status}><option value="draft">ฉบับร่าง</option><option value="published">เผยแพร่</option></select></label>
-          <button type="submit">บันทึกการแก้ไข</button>
-        </form>
-        <form action={deleteRecord} className="admin-delete"><input type="hidden" name="section" value={section} /><input type="hidden" name="id" value={record.id} /><button type="submit">ลบรายการนี้</button></form>
-      </details>)}
-      {!data?.length && <p>ยังไม่มีรายการในหมวดนี้</p>}
-    </div>
-  </main>;
+  const text = (key: string) => (typeof query[key] === "string" ? (query[key] as string) : undefined);
+  const filter: Filter = text("status") === "published" || text("status") === "draft" ? (text("status") as Filter) : "all";
+  const editId = text("edit");
+  const isNew = text("new") !== undefined;
+  const slot = text("slot");
+
+  const { data, error } = await supabase.from(config.table).select("*").order("created_at", { ascending: false });
+  const all = ((data ?? []) as Row[]).sort((a, b) => Number(b.status === "published") - Number(a.status === "published"));
+  const rows = filter === "all" ? all : all.filter((row) => (filter === "published") === (row.status === "published"));
+  const selected = editId ? all.find((row) => row.id === editId) ?? null : null;
+  const editing = Boolean(selected) || isNew;
+
+  const imageFields = fields.filter((field) => field.kind === "image");
+  const thumbField = imageFields[0];
+  const paths = all.flatMap((row) => imageFields.map((field) => row[field.name]).filter((path): path is string => typeof path === "string" && path.length > 0));
+  const signed = await signImages(supabase, paths);
+  const imageUrls: Record<string, string> = {};
+  for (const field of imageFields) {
+    const path = selected?.[field.name];
+    if (typeof path === "string" && signed.has(path)) imageUrls[field.name] = signed.get(path)!;
+  }
+
+  const needsSports = section === "people" || section === "schedule";
+  const { data: sportRows } = needsSports ? await supabase.from("sports").select("id,name").order("name") : { data: [] };
+
+  const slotTaken: Record<string, string> = {};
+  if (section === "people") {
+    for (const row of all) {
+      if (row.id !== selected?.id && row.status === "published" && row.is_demo !== true && typeof row.homepage_slot === "string") {
+        slotTaken[row.homepage_slot] = String(row.name ?? "");
+      }
+    }
+  }
+
+  const prefill: Record<string, string> = section === "people" && slot && slotGroup[slot] ? { homepage_slot: slot, group_name: slotGroup[slot] } : {};
+  const slotLabels = (fields.find((field) => field.name === "homepage_slot")?.optionLabels ?? {}) as Record<string, string>;
+
+  const href = (next: { edit?: string; isNew?: boolean; status?: Filter }) => {
+    const search = new URLSearchParams();
+    const status = next.status ?? filter;
+    if (status !== "all") search.set("status", status);
+    if (next.edit) search.set("edit", next.edit);
+    if (next.isNew) search.set("new", "1");
+    const qs = search.toString();
+    return qs ? `/admin/${section}?${qs}` : `/admin/${section}`;
+  };
+
+  const titleOf = (row: Row) => String(row[config.titleKey] ?? "").trim() || `(ยังไม่ตั้งชื่อ${config.noun})`;
+  const counts = { all: all.length, published: all.filter((row) => row.status === "published").length };
+  const flash = text("saved") === "published" ? "เผยแพร่แล้ว รายการนี้แสดงบนเว็บ" : text("saved") === "draft" ? "บันทึกฉบับร่างแล้ว ยังไม่แสดงบนเว็บ" : text("deleted") ? "ลบแล้ว" : null;
+  const failure = text("error");
+
+  return (
+    <AdminFrame supabase={supabase} active={section}>
+      <header className="adm-head">
+        <div>
+          <h1>{config.label}</h1>
+          <p>{config.hint}</p>
+        </div>
+        <div className="adm-head__actions">
+          <a className="adm-btn" href={config.liveHref} target="_blank" rel="noopener noreferrer">ดูบนเว็บ<span aria-hidden="true"> ↗</span><span className="sr-only"> (เปิดแท็บใหม่)</span></a>
+          <Link className="adm-btn adm-btn--primary" href={href({ isNew: true })}>เพิ่ม{config.noun}</Link>
+        </div>
+      </header>
+
+      {flash && (
+        <p role="status" className="adm-notice adm-notice--ok">
+          {flash}
+          {text("saved") === "published" && <> <a href={config.liveHref} target="_blank" rel="noopener noreferrer">ดูบนเว็บ<span className="sr-only"> (เปิดแท็บใหม่)</span></a></>}
+        </p>
+      )}
+      {failure && <p role="alert" className="adm-notice adm-notice--error">{failure}</p>}
+      {error && <p role="alert" className="adm-notice adm-notice--error">โหลดรายการไม่สำเร็จ: {error.message} ลองรีเฟรชหน้านี้</p>}
+
+      <div className="adm-split" data-editing={editing || undefined}>
+        <section className="adm-list" aria-labelledby="list-title">
+          <h2 id="list-title" className="sr-only">รายการ{config.label}</h2>
+          <nav className="adm-filter" aria-label="กรองตามสถานะ">
+            <Link href={href({ status: "all" })} aria-current={filter === "all" ? "true" : undefined}>ทั้งหมด <small>{counts.all}</small></Link>
+            <Link href={href({ status: "published" })} aria-current={filter === "published" ? "true" : undefined}>เผยแพร่ <small>{counts.published}</small></Link>
+            <Link href={href({ status: "draft" })} aria-current={filter === "draft" ? "true" : undefined}>ฉบับร่าง <small>{counts.all - counts.published}</small></Link>
+          </nav>
+          {rows.length > 0 ? (
+            <ul className="adm-rows">
+              {rows.map((row) => {
+                const thumbPath = thumbField ? row[thumbField.name] : null;
+                const thumb = typeof thumbPath === "string" ? signed.get(thumbPath) : undefined;
+                const meta = config.metaKeys.map((key) => formatMeta(key, row[key])).filter(Boolean);
+                const slotName = typeof row.homepage_slot === "string" ? (slotLabels[row.homepage_slot] ?? row.homepage_slot).split(" · ")[0] : null;
+                return (
+                  <li key={row.id}>
+                    <Link href={href({ edit: row.id })} className={`adm-row${thumbField ? " adm-row--thumb" : ""}`} aria-current={selected?.id === row.id ? "true" : undefined}>
+                      {thumbField && (thumb ? <Image src={thumb} alt="" width={96} height={96} unoptimized className="adm-thumb" /> : <span className="adm-thumb adm-thumb--empty" aria-hidden="true" />)}
+                      <span className="adm-row__text">
+                        <strong>{titleOf(row)}</strong>
+                        {meta.length > 0 && <span className="adm-row__meta">{meta.map((item) => <span key={item}>{item}</span>)}</span>}
+                        <span className="adm-row__time">แก้ล่าสุด {formatUpdated(row.updated_at)}</span>
+                      </span>
+                      <span className="adm-row__tags">
+                        <span className="adm-chip" data-status={row.status}>{row.status === "published" ? "เผยแพร่แล้ว" : "ฉบับร่าง"}</span>
+                        {row.is_demo === true && <span className="adm-chip adm-chip--demo">ตัวอย่าง</span>}
+                        {slotName && <span className="adm-chip adm-chip--slot">{slotName}</span>}
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <div className="adm-empty">
+              {all.length === 0 ? (
+                <>
+                  <p>ยังไม่มี{config.noun}ในหมวดนี้</p>
+                  <p>{config.hint}</p>
+                  <Link className="adm-btn adm-btn--primary" href={href({ isNew: true })}>เพิ่ม{config.noun}แรก</Link>
+                </>
+              ) : (
+                <>
+                  <p>ไม่มีรายการ{filter === "published" ? "ที่เผยแพร่แล้ว" : "ที่เป็นฉบับร่าง"}</p>
+                  <Link className="adm-btn" href={href({ status: "all" })}>ดูทั้งหมด</Link>
+                </>
+              )}
+            </div>
+          )}
+        </section>
+
+        <section className="adm-editor" aria-labelledby="editor-title">
+          {editing ? (
+            <>
+              <Link className="adm-back" href={href({})}>← กลับไปรายการ{config.label}</Link>
+              <div className="adm-editor__head">
+                <h2 id="editor-title">{selected ? titleOf(selected) : `เพิ่ม${config.noun}ใหม่`}</h2>
+                {selected && (
+                  <p>
+                    <span className="adm-chip" data-status={selected.status}>{selected.status === "published" ? "เผยแพร่แล้ว" : "ฉบับร่าง"}</span>
+                    {selected.is_demo === true && <span className="adm-chip adm-chip--demo">ตัวอย่าง</span>}
+                    <span>แก้ล่าสุด {formatUpdated(selected.updated_at)}</span>
+                  </p>
+                )}
+              </div>
+              <RecordForm
+                key={selected?.id ?? `new-${slot ?? ""}`}
+                section={section}
+                noun={config.noun}
+                fields={fields}
+                required={config.required}
+                values={toValues(fields, selected, prefill)}
+                recordId={selected?.id ?? null}
+                status={selected?.status === "published" ? "published" : "draft"}
+                sortOrder={typeof selected?.sort_order === "number" ? selected.sort_order : 0}
+                hasSortOrder={section !== "standings"}
+                sports={sportRows ?? []}
+                imageUrls={imageUrls}
+                slotTaken={slotTaken}
+                action={saveRecord}
+              />
+              {selected && (
+                <div className="adm-danger">
+                  <p>ลบรายการนี้ถาวร ถ้าแค่ต้องการซ่อนจากเว็บ ให้เปลี่ยนเป็นฉบับร่าง</p>
+                  <ConfirmDelete action={deleteRecord} section={section} id={selected.id} title={titleOf(selected)} live={selected.status === "published"} />
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="adm-editor__idle">
+              <h2 id="editor-title">เลือกรายการเพื่อแก้ไข</h2>
+              <p>เลือกจากรายการทางซ้าย หรือเพิ่ม{config.noun}ใหม่</p>
+            </div>
+          )}
+        </section>
+      </div>
+    </AdminFrame>
+  );
 }

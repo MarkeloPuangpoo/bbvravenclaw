@@ -65,7 +65,7 @@ export function Standing({ standings }: { standings: PublicContent["standings"] 
 
 export function Moments({ moments }: { moments: PublicContent["moments"] }) {
   return <section className="moments" id="moments" aria-labelledby="moments-title">
-    <p className="editorial-label">10 / MOMENTS</p><h2 id="moments-title">FROM<br /><em>THE FIELD.</em></h2>
+    <p className="editorial-label">10 / MOMENTS</p><h2 id="moments-title">FROM<br /><span>THE FIELD.</span></h2>
     {moments.length > 0 ? <div className={`moments__gallery${moments.length === 1 ? " moments__gallery--single" : ""}`} aria-label={`ภาพกิจกรรม ${moments.length} ภาพ`}>{moments.map((moment, index) => <figure key={moment.id}><Image src={moment.imageUrl} alt={moment.caption} width={1600} height={1100} sizes="(max-width: 768px) 90vw, (max-width: 1200px) 48vw, 700px" /><figcaption><span>FIG. {String(index + 1).padStart(3, "0")}</span><span>{moment.caption}</span>{moment.credit && <span>{moment.credit}</span>}</figcaption></figure>)}</div> : <div className="moments__pending"><span className="moments__frame" aria-hidden="true" /><p>ภาพจากวันงานจะถูกรวบรวมไว้ที่นี่</p><span className="editorial-label">THE ARCHIVE / WAITING FOR ITS FIRST FRAME</span></div>}
   </section>;
 }

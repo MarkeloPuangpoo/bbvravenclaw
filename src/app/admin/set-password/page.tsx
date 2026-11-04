@@ -1,6 +1,11 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { AuthFrame } from "@/components/admin/AuthFrame";
+import { PasswordField } from "@/components/admin/PasswordField";
+import { SubmitButton } from "@/components/admin/SubmitButton";
 import { updatePassword } from "../actions";
+
+export const metadata = { title: "ตั้งรหัสผ่านใหม่" };
 
 export default async function SetPassword({ searchParams }: PageProps<"/admin/set-password">) {
   const supabase = await createSupabaseServerClient();
@@ -11,15 +16,22 @@ export default async function SetPassword({ searchParams }: PageProps<"/admin/se
   const { data: activeAdmin } = await supabase.rpc("is_house_admin");
   if (!activeAdmin) redirect("/admin/login?error=link");
   const query = await searchParams;
-  return <main className="admin-shell" id="main-content">
-    <p className="editorial-label">RAVENCLAW / CONTROL ROOM</p>
-    <h1>ตั้งรหัสผ่านใหม่</h1>
-    <p>ใช้รหัสผ่านอย่างน้อย 12 ตัวอักษร หลังบันทึกแล้วให้เข้าสู่ระบบอีกครั้ง</p>
-    {query.error && <p role="alert" className="admin-alert">{query.error === "validation" ? "รหัสผ่านต้องยาว 12–128 ตัวอักษรและตรงกันทั้งสองช่อง" : `ตั้งรหัสผ่านไม่สำเร็จ: ${query.error}`}</p>}
-    <form action={updatePassword} className="admin-login-form">
-      <label>รหัสผ่านใหม่<input name="password" type="password" minLength={12} maxLength={128} autoComplete="new-password" required /></label>
-      <label>ยืนยันรหัสผ่าน<input name="confirm" type="password" minLength={12} maxLength={128} autoComplete="new-password" required /></label>
-      <button type="submit">บันทึกรหัสผ่าน →</button>
-    </form>
-  </main>;
+  const failure = typeof query.error === "string" ? query.error : null;
+  return (
+    <AuthFrame
+      title="ตั้งรหัสผ่านใหม่"
+      lead="หลังบันทึก ทุกอุปกรณ์จะถูกออกจากระบบ แล้วเข้าสู่ระบบอีกครั้งด้วยรหัสใหม่"
+    >
+      {failure && (
+        <p role="alert" className="adm-notice adm-notice--error">
+          {failure === "validation" ? "รหัสผ่านต้องยาว 12–128 ตัวอักษร และกรอกให้ตรงกันทั้งสองช่อง" : `ตั้งรหัสผ่านไม่สำเร็จ: ${failure}`}
+        </p>
+      )}
+      <form action={updatePassword} className="adm-auth__form">
+        <PasswordField id="new-password" name="password" label="รหัสผ่านใหม่" autoComplete="new-password" minLength={12} maxLength={128} hint="อย่างน้อย 12 ตัวอักษร" />
+        <PasswordField id="confirm-password" name="confirm" label="ยืนยันรหัสผ่านใหม่" autoComplete="new-password" minLength={12} maxLength={128} />
+        <SubmitButton pendingLabel="กำลังบันทึก…">บันทึกรหัสผ่าน</SubmitButton>
+      </form>
+    </AuthFrame>
+  );
 }

@@ -103,6 +103,8 @@ export function SiteHeader() {
     });
   };
 
+  // The admin console has its own chrome.
+  if (pathname.startsWith("/admin")) return null;
   return (
     <header className="site-header">
       <a className="site-header__brand" href={pathname === "/" ? "#house" : "/#house"} onClick={(event) => { event.preventDefault(); closeAndNavigate("#house"); }} aria-label="Ravenclaw กลับไปหน้าแรก">
@@ -119,18 +121,17 @@ export function SiteHeader() {
         className="site-header__menu-button"
         type="button"
         aria-expanded={isOpen}
-        aria-controls={isOpen ? "mobile-menu" : undefined}
+        aria-controls="mobile-menu"
         onClick={() => setIsOpen((value) => !value)}
       >
         <span>{isOpen ? "CLOSE" : "MENU"}</span>
         <span aria-hidden="true">{isOpen ? "×" : "+"}</span>
       </button>
-      {isOpen && (
-        <div className="site-header__menu" id="mobile-menu">
-          <ConstellationNav variant="menu" activeIndex={pathname === "/" ? activeChapter : -1} onNavigate={closeAndNavigate} isHomePage={pathname === "/"} firstLinkRef={firstLink} lastLinkRef={lastLink} />
-          <span className="editorial-label">RAVENCLAW / BLUE HOUSE / 2026</span>
-        </div>
-      )}
+      {/* Always mounted so it can slide in and out; inert + aria-hidden while closed. */}
+      <div className={`site-header__menu${isOpen ? " is-open" : ""}`} id="mobile-menu" inert={!isOpen} aria-hidden={!isOpen}>
+        <ConstellationNav variant="menu" activeIndex={pathname === "/" ? activeChapter : -1} onNavigate={closeAndNavigate} isHomePage={pathname === "/"} firstLinkRef={firstLink} lastLinkRef={lastLink} />
+        <span className="editorial-label">RAVENCLAW / BLUE HOUSE / 2026</span>
+      </div>
     </header>
   );
 }

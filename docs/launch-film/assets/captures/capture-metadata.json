@@ -1,0 +1,204 @@
+{
+  "title": "Ravenclaw — Blue House | BBV Sports Day 2026",
+  "sections": [
+    {
+      "id": "house",
+      "y": 0,
+      "h": 730
+    },
+    {
+      "id": "sorting",
+      "y": 1460,
+      "h": 803
+    },
+    {
+      "id": "manifesto",
+      "y": 2263,
+      "h": 730
+    },
+    {
+      "id": "values",
+      "y": 2993.2421875,
+      "h": 730
+    },
+    {
+      "id": "people",
+      "y": 5475.2421875,
+      "h": 1978
+    },
+    {
+      "id": "cheerleaders",
+      "y": 7453.15625,
+      "h": 890
+    },
+    {
+      "id": "athletes",
+      "y": 8343,
+      "h": 1141
+    },
+    {
+      "id": "schedule",
+      "y": 9484.484375,
+      "h": 548
+    },
+    {
+      "id": "moments",
+      "y": 10722.9765625,
+      "h": 730
+    },
+    {
+      "id": "cheer-book",
+      "y": 11452.9765625,
+      "h": 621
+    },
+    {
+      "id": "announcements",
+      "y": 12073.4765625,
+      "h": 572
+    },
+    {
+      "id": "venue",
+      "y": 12645.3046875,
+      "h": 667
+    },
+    {
+      "id": "final",
+      "y": 13311.953125,
+      "h": 730
+    }
+  ],
+  "fonts": [
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "unloaded"
+    },
+    {
+      "family": "Cormorant Garamond",
+      "status": "loaded"
+    },
+    {
+      "family": "Cormorant Garamond Fallback",
+      "status": "loaded"
+    },
+    {
+      "family": "Geist",
+      "status": "unloaded"
+    },
+    {
+      "family": "Geist",
+      "status": "unloaded"
+    },
+    {
+      "family": "Geist",
+      "status": "unloaded"
+    },
+    {
+      "family": "Geist",
+      "status": "unloaded"
+    },
+    {
+      "family": "Geist",
+      "status": "loaded"
+    },
+    {
+      "family": "Geist Fallback",
+      "status": "loaded"
+    },
+    {
+      "family": "IBM Plex Sans Thai",
+      "status": "unloaded"
+    },
+    {
+      "family": "IBM Plex Sans Thai",
+      "status": "loaded"
+    },
+    {
+      "family": "IBM Plex Sans Thai",
+      "status": "unloaded"
+    },
+    {
+      "family": "IBM Plex Sans Thai",
+      "status": "unloaded"
+    },
+    {
+      "family": "IBM Plex Sans Thai",
+      "status": "unloaded"
+    },
+    {
+      "family": "IBM Plex Sans Thai",
+      "status": "loaded"
+    },
+    {
+      "family": "IBM Plex Sans Thai",
+      "status": "unloaded"
+    },
+    {
+      "family": "IBM Plex Sans Thai",
+      "status": "unloaded"
+    },
+    {
+      "family": "IBM Plex Sans Thai",
+      "status": "unloaded"
+    },
+    {
+      "family": "IBM Plex Sans Thai",
+      "status": "loaded"
+    },
+    {
+      "family": "IBM Plex Sans Thai",
+      "status": "unloaded"
+    },
+    {
+      "family": "IBM Plex Sans Thai",
+      "status": "unloaded"
+    },
+    {
+      "family": "IBM Plex Sans Thai",
+      "status": "unloaded"
+    },
+    {
+      "family": "IBM Plex Sans Thai",
+      "status": "loaded"
+    },
+    {
+      "family": "IBM Plex Sans Thai",
+      "status": "unloaded"
+    },
+    {
+      "family": "IBM Plex Sans Thai",
+      "status": "unloaded"
+    },
+    {
+      "family": "IBM Plex Sans Thai Fallback",
+      "status": "loaded"
+    },
+    {
+      "family": "Noto Serif Thai",
+      "status": "loaded"
+    },
+    {
+      "family": "Noto Serif Thai",
+      "status": "unloaded"
+    },
+    {
+      "family": "Noto Serif Thai",
+      "status": "unloaded"
+    },
+    {
+      "family": "Noto Serif Thai Fallback",
+      "status": "unloaded"
+    }
+  ]
+}
