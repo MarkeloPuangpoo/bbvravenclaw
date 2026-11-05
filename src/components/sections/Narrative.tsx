@@ -22,7 +22,7 @@ export function People({ people }: { people: PublicContent["people"] }) {
     <div className="people__top editorial-label"><span>05 / MEET THE HOUSE</span><span>THE PEOPLE BEHIND THE BLUE</span></div>
     <h2 id="people-title">THE<br /><span>HOUSE.</span></h2>
     {leadership.length > 0 ? <div className="people__list">{leadership.map((person, index) => <figure key={person.id} className={`people__figure${person.slot === "president" ? " people__figure--feature" : ""}`}>
-      <figcaption><span className="editorial-label">FIG. {String(index + 1).padStart(3, "0")} / {person.role}</span><strong>{person.name}</strong>{person.quote && <q>{person.quote}</q>}</figcaption>
+      <figcaption><span className="editorial-label">FIG. {String(index + 1).padStart(3, "0")}</span><b className="people__role">{person.role}</b><strong>{person.name}</strong>{person.quote && <q>{person.quote}</q>}</figcaption>
       <div className="people__portrait"><Image src={person.portraitUrl} alt={`ภาพของ ${person.name}`} width={1200} height={1500} sizes="(max-width: 768px) 68vw, (max-width: 1400px) 40vw, 570px" /></div>
     </figure>)}</div> : <div className="people__pending"><span className="people__empty-frame" aria-hidden="true" /><p>รายชื่อและภาพผู้นำบ้านสีฟ้า<br />จะปรากฏเมื่อได้รับการยืนยัน</p><span className="editorial-label">PORTRAITS / PENDING</span></div>}
   </section>;
