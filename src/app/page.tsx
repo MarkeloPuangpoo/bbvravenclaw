@@ -4,7 +4,7 @@ import { heroArtwork } from "@/data/media";
 import { siteContent } from "@/data/site";
 import { SceneMotion } from "@/components/motion/SceneMotion";
 import { Invitation } from "@/components/motion/Invitation";
-import { Announcements, Athletes, CheerBook, Cheerleaders, FinalScene, Manifesto, Moments, People, Schedule, Standing, Venue } from "@/components/sections/Narrative";
+import { Announcements, Athletes, CheerBook, Cheerleaders, FinalScene, Manifesto, Moments, People, Schedule, Standing } from "@/components/sections/Narrative";
 import { BrandMark } from "@/components/ui/BrandMark";
 import { HouseDiadem } from "@/components/three/HouseDiadem";
 import { getPublicContent } from "@/lib/public-content";
@@ -94,7 +94,6 @@ export default async function Home() {
       <Moments moments={content.moments} />
       <CheerBook cheers={content.cheers} />
       <Announcements announcements={content.announcements} />
-      <Venue />
       <FinalScene />
 
       <footer className="site-footer">

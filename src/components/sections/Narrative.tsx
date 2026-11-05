@@ -79,10 +79,6 @@ export function Announcements({ announcements }: { announcements: PublicContent[
   return <section className="announcements" id="announcements" aria-labelledby="announcements-title"><p className="editorial-label">BLUE HOUSE / BULLETIN</p><h2 id="announcements-title">ประกาศ</h2><div>{announcements.map((item) => <article key={item.id}><h3>{item.title}</h3><p>{item.body}</p>{item.publishedAt && <time dateTime={item.publishedAt}>{new Intl.DateTimeFormat("th-TH", { dateStyle: "medium", timeZone: "Asia/Bangkok" }).format(new Date(item.publishedAt))}</time>}</article>)}</div></section>;
 }
 
-export function Venue() {
-  return <section className="venue" id="venue" aria-labelledby="venue-title"><p className="editorial-label">12 / THE VENUE</p><h2 id="venue-title">FIND<br />YOUR<br /><span>WAY.</span></h2><div className="venue__status"><span className="editorial-label">EVENT MAP / PENDING</span><p>ผังพื้นที่กิจกรรมจะปรากฏเมื่อได้รับแผนที่และจุดจัดงานที่ตรวจสอบแล้ว</p></div></section>;
-}
-
 export function FinalScene() {
   return <section className="final-scene" id="final" aria-labelledby="final-title"><div className="final-scene__top editorial-label"><span>14 / RAVENCLAW</span><span>THE HOUSE OF MINDS</span></div><BrandMark kind="crest" tone="bronze" className="final-scene__art" /><h2 id="final-title"><span>ONE HOUSE.</span><span>ONE BLUE.</span><strong>RAVENCLAW.</strong></h2><p className="editorial-label">BANGPAKONG &quot;BOWONWITTAYAYON&quot; SCHOOL / SPORTS DAY 2026</p></section>;
 }
