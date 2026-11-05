@@ -1,0 +1,33 @@
+:root {
+  --bg:#0a1124; --ink:#dde9ff; --ink2:#b7c0d1; --ink3:#a97942;
+  --hair:rgba(221,233,255,.14); --accent:#a97942; --accentSoft:#102a6b;
+  --winBg:#050a18; --side:#141c2d; --wall1:#102a6b; --wall2:#102a6b;
+  --menuBg:#111b33; --menuInk:#dde9ff; --dockBg:#111b33;
+  --tile0:#eee9dc; --tile1:#a97942; --tile2:#dde9ff;
+  --metal1:#9b9fa9; --metal2:#9b9fa9; --edge:rgba(221,233,255,.24); --shade:#000;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:'Geist',sans-serif;-webkit-font-smoothing:antialiased;font-synthesis:none;text-rendering:geometricPrecision}
+#stage{position:relative;overflow:hidden;background:var(--bg);contain:strict}
+.cam{position:absolute;left:0;top:0;transform-origin:0 0}
+.full{position:absolute;left:0;top:0;width:100%;height:100%}
+.abs{position:absolute}.row{display:flex;align-items:center}.center{display:flex;align-items:center;justify-content:center}.mask{overflow:hidden}
+.t{display:inline-block;white-space:nowrap;line-height:1.3;vertical-align:top}i{display:block;font-style:normal}
+.website{position:absolute;left:0;top:50px;width:1200px;height:730px;overflow:hidden;background:#050a18}
+.capture{position:absolute;inset:0;width:1200px;height:730px;object-fit:contain}
+.film-top,.film-bottom{position:absolute;left:54px;right:54px;display:flex;justify-content:space-between;font-size:17px;letter-spacing:2.7px;font-weight:500}
+.film-top{top:29px;color:#dde9ff}.film-bottom{bottom:27px;color:#a9b4ca;font-size:14px;letter-spacing:1.8px}
+.end-copy{position:absolute;left:1280px;top:298px;width:586px}
+.end-label{font-size:17px;letter-spacing:2.6px;color:#c49865}
+.end-copy h1{font:400 94px/.98 'Cormorant Garamond',serif;letter-spacing:-2.5px;margin-top:28px}
+.end-copy h1 em{font-weight:400;color:#eee9dc}
+.end-rule{width:68px;height:1px;background:#a97942;margin:36px 0}
+.end-copy p{font-size:21px;letter-spacing:2px}
+.end-follow{display:block;font-size:15px;letter-spacing:2px;color:#a9b4ca;margin-top:72px;line-height:2.3}
+.end-follow strong{font-weight:400;letter-spacing:.5px;color:#dde9ff;font-size:24px}
+
+.website iframe{border:0;width:1200px;height:730px;display:block;background:#050a18}
+.copy-mask{display:block;overflow:hidden;padding-bottom:8px;margin-bottom:-8px}
+.copy-mask>span,.copy-mask>p{display:block}
+.end-copy h1{line-height:1.02}
+.music-credit{position:absolute;left:1325px;top:855px;width:541px;font-size:17px;line-height:1.5;color:#a9b4ca;letter-spacing:.2px}

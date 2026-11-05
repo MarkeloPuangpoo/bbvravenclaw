@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isSectionKey, sections, type Field } from "@/lib/admin/sections";
+import { clientKey, loginRule, resetRules, throttleClear, throttleHit, throttleWait } from "@/lib/auth-throttle";
 
 const imageTypes = new Map([
   ["image/jpeg", "jpg"], ["image/png", "png"],
@@ -21,14 +22,21 @@ export async function login(form: FormData) {
   const password = String(form.get("password") ?? "");
   const email = process.env.SUPABASE_ADMIN_EMAIL;
   if (!email || !password) redirect("/admin/login?error=config");
+  const key = await clientKey();
+  if (await throttleWait("login", key) > 0) redirect("/admin/login?error=throttled");
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) redirect("/admin/login?error=credentials");
+  if (error) {
+    await throttleHit("login", key, loginRule);
+    redirect("/admin/login?error=credentials");
+  }
   const { data: allowed } = await supabase.rpc("is_house_admin");
   if (!allowed) {
     await supabase.auth.signOut();
+    await throttleHit("login", key, loginRule);
     redirect("/admin/login?error=access");
   }
+  await throttleClear("login", key);
   redirect("/admin");
 }
 
@@ -43,6 +51,14 @@ export async function requestPasswordReset() {
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   const email = process.env.SUPABASE_ADMIN_EMAIL;
   if (!url || !key || !email) redirect("/admin/forgot-password?error=config");
+  const client = await clientKey();
+  const waits = await Promise.all([
+    throttleWait("reset-burst", client), throttleWait("reset-hour", client), throttleWait("reset-all", "all"),
+  ]);
+  if (waits.some((seconds) => seconds > 0)) redirect("/admin/forgot-password?error=throttled");
+  await Promise.all([
+    throttleHit("reset-burst", client, resetRules.burst), throttleHit("reset-hour", client, resetRules.hourly), throttleHit("reset-all", "all", resetRules.global),
+  ]);
   const supabase = createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, flowType: "implicit" },
   });
@@ -90,16 +106,25 @@ function parseField(field: Field, form: FormData): string | number | boolean | n
   return value || null;
 }
 
-export async function saveRecord(form: FormData) {
+export type SaveState = { error: string | null };
+
+function messageOf(error: unknown) {
+  if (error instanceof Error) return error.message;
+  if (error && typeof error === "object" && "message" in error && typeof error.message === "string") return error.message;
+  return "บันทึกไม่สำเร็จ ลองอีกครั้ง";
+}
+
+export async function saveRecord(_previous: SaveState, form: FormData): Promise<SaveState> {
   const supabase = await requireAdmin();
   const section = String(form.get("section") ?? "");
-  if (!isSectionKey(section)) throw new Error("Invalid section");
+  if (!isSectionKey(section)) return { error: "ไม่พบหมวดที่ต้องการบันทึก" };
   const config = sections[section];
   const suppliedId = String(form.get("id") ?? "");
   const id = suppliedId || randomUUID();
-  if (!/^[0-9a-f-]{36}$/i.test(id)) redirect(errorUrl(section, "ID ไม่ถูกต้อง"));
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return { error: "รหัสรายการไม่ถูกต้อง" };
   const uploaded: string[] = [];
   const oldImages: string[] = [];
+  let savedStatus = "draft";
   try {
     const imageFields = (config.fields as readonly Field[]).filter((field) => field.kind === "image");
     const { data: existing, error: readError } = suppliedId && imageFields.length > 0
@@ -127,6 +152,7 @@ export async function saveRecord(form: FormData) {
     const status = String(form.get("status") ?? "draft");
     if (!(["draft", "published"] as string[]).includes(status)) throw new Error("สถานะไม่ถูกต้อง");
     values.status = status;
+    savedStatus = status;
     if (section !== "standings") {
       const order = Number(form.get("sort_order") ?? 0);
       if (!Number.isSafeInteger(order) || Math.abs(order) > 1000000) throw new Error("ลำดับไม่ถูกต้อง");
@@ -145,11 +171,11 @@ export async function saveRecord(form: FormData) {
     if (oldImages.length) await supabase.storage.from("event-media").remove(oldImages);
   } catch (error) {
     if (uploaded.length) await supabase.storage.from("event-media").remove(uploaded);
-    redirect(errorUrl(section, error instanceof Error ? error.message : "บันทึกไม่สำเร็จ"));
+    return { error: messageOf(error) };
   }
   revalidatePath("/");
   revalidatePath(`/admin/${section}`);
-  redirect(`/admin/${section}?saved=1`);
+  redirect(`/admin/${section}?edit=${id}&saved=${savedStatus}`);
 }
 
 export async function deleteRecord(form: FormData) {
