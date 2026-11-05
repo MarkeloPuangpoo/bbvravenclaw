@@ -44,8 +44,8 @@ export function Athletes({ sports, people }: { sports: PublicContent["sports"]; 
     <div className="athletes__top editorial-label"><span>07 / THE FIELD</span><span>BLUE HOUSE / SPORTS DAY</span></div>
     <h2 id="athletes-title"><span>FASTER</span><span>HIGHER</span><strong>BLUE.</strong></h2>
     <div className="athletes__content">
-      {sportsHead && <div className="athletes__people"><figure><Image src={sportsHead.portraitUrl} alt={`ภาพของ ${sportsHead.name}`} width={1200} height={1500} sizes="(max-width: 899px) 48vw, 220px" /><figcaption><small>HEAD OF THE FIELD / {sportsHead.role}</small><strong>{sportsHead.name}</strong></figcaption></figure></div>}
-      {sports.length > 0 ? <div className="athletes__sports">{sports.map((sport, index) => <div key={sport.id}><span>{String(index + 1).padStart(2, "0")}</span><strong>{sport.name}</strong><span>{sport.description}</span></div>)}</div> : <div className="athletes__pending"><span className="editorial-label">SPORTS / PENDING</span><p>ชนิดกีฬาและรายชื่อนักกีฬา<br />จะประกาศเมื่อได้รับข้อมูลทางการ</p></div>}
+      {sportsHead && <div className="athletes__people"><figure><Image src={sportsHead.portraitUrl} alt={`ภาพของ ${sportsHead.name}`} width={1200} height={1500} sizes="(max-width: 899px) 48vw, 220px" /><figcaption><span className="editorial-label">HEAD OF THE FIELD</span><b className="people__role">{sportsHead.role}</b><strong>{sportsHead.name}</strong></figcaption></figure></div>}
+      {sports.length > 0 ? <div className="athletes__sports">{sports.map((sport, index) => <div key={sport.id}><span>{String(index + 1).padStart(2, "0")}</span><strong>{sport.name}</strong><span>{sport.description}</span></div>)}</div> : null}
     </div>
     <span className="athletes__number" aria-hidden="true">07</span>
   </section>;
