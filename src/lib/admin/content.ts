@@ -1,3 +1,4 @@
+import { cache } from "react";
 import type { createSupabaseServerClient } from "@/lib/supabase/server";
 import { sections, type SectionKey } from "@/lib/admin/sections";
 
@@ -6,7 +7,8 @@ export type Counts = Record<SectionKey, { published: number; draft: number }>;
 
 export const sectionKeys = Object.keys(sections) as SectionKey[];
 
-export async function getSectionCounts(supabase: AdminClient): Promise<Counts> {
+// cache(): the page and AdminFrame both ask for counts; run the 7 queries once per request.
+export const getSectionCounts = cache(async (supabase: AdminClient): Promise<Counts> => {
   const entries = await Promise.all(sectionKeys.map(async (key) => {
     const { data } = await supabase.from(sections[key].table).select("status");
     const rows = data ?? [];
@@ -14,7 +16,7 @@ export async function getSectionCounts(supabase: AdminClient): Promise<Counts> {
     return [key, { published, draft: rows.length - published }] as const;
   }));
   return Object.fromEntries(entries) as Counts;
-}
+});
 
 const dateTime = new Intl.DateTimeFormat("th-TH", { timeZone: "Asia/Bangkok", day: "numeric", month: "short", year: "2-digit", hour: "2-digit", minute: "2-digit" });
 const dateOnly = new Intl.DateTimeFormat("th-TH", { timeZone: "Asia/Bangkok", day: "numeric", month: "short", year: "numeric" });
@@ -37,10 +39,10 @@ export function formatMeta(key: string, value: unknown) {
 /** Signed URLs for a set of storage paths, keyed by path. */
 export async function signImages(supabase: AdminClient, paths: string[]) {
   const signed = new Map<string, string>();
-  await Promise.all([...new Set(paths)].map(async (path) => {
-    const { data } = await supabase.storage.from("event-media").createSignedUrl(path, 60 * 15);
-    if (data?.signedUrl) signed.set(path, data.signedUrl);
-  }));
+  const unique = [...new Set(paths)];
+  if (unique.length === 0) return signed;
+  const { data } = await supabase.storage.from("event-media").createSignedUrls(unique, 60 * 15);
+  for (const item of data ?? []) if (item.path && item.signedUrl) signed.set(item.path, item.signedUrl);
   return signed;
 }
 
