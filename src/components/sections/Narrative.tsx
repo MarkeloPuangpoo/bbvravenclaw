@@ -34,7 +34,7 @@ export function Cheerleaders({ people }: { people: PublicContent["people"] }) {
     <p className="editorial-label">06 / BLUE STAND</p>
     <h2 id="cheerleaders-title">MAKE<br /><span>SOME</span><br />NOISE.</h2>
     <div className="cheerleaders__rule" aria-hidden="true">RAVENCLAW / RAVENCLAW / RAVENCLAW</div>
-    {standHead ? <div className="cheerleaders__people"><figure><Image src={standHead.cutoutUrl ?? standHead.portraitUrl} alt={`ภาพของ ${standHead.name}`} width={900} height={1200} sizes="(max-width: 768px) 80vw, 35vw" /><figcaption><small>HEAD OF BLUE STAND / {standHead.role}</small><strong>{standHead.name}</strong></figcaption></figure></div> : <p className="cheerleaders__pending">เสียงของบ้านสีฟ้ากำลังเตรียมพร้อม<br /><span>หัวหน้าสแตนด์ / รอการยืนยัน</span></p>}
+    {standHead ? <div className="cheerleaders__people"><figure><Image src={standHead.cutoutUrl ?? standHead.portraitUrl} alt={`ภาพของ ${standHead.name}`} width={900} height={1200} sizes="(max-width: 768px) 72vw, 300px" /><figcaption><span className="editorial-label">HEAD OF BLUE STAND</span><b className="people__role">{standHead.role}</b><strong>{standHead.name}</strong></figcaption></figure></div> : <p className="cheerleaders__pending">เสียงของบ้านสีฟ้ากำลังเตรียมพร้อม<br /><span>หัวหน้าสแตนด์ / รอการยืนยัน</span></p>}
   </section>;
 }
 
